@@ -18,7 +18,7 @@ app/
 
 Every `POLL_MINUTES`:
 
-1. **Discover:** list all locations the agency account manages. New ones are saved disabled and announced by email.
+1. **Discover:** list all locations the agency account manages. New ones are saved disabled and announced by email. City and business context are pre-filled from the Google profile categories and description when empty.
 2. **Sync:** for enabled locations, fetch reviews. On the first sync every review is marked as backfill.
 3. **Draft:** each new review without a reply gets a Claude draft and is routed.
 4. **Notify:** reviews awaiting approval are emailed. Backfill reviews are grouped in one email per location.

@@ -22,6 +22,8 @@ class GbpLocation:
     title: str
     address: str
     website: str
+    city: str = ""
+    context: str = ""
 
 
 @dataclass
@@ -41,6 +43,18 @@ class GbpClient(Protocol):
     def put_reply(self, review_name: str, comment: str) -> None: ...
 
 
+def profile_context(raw: dict) -> str:
+    cats = raw.get("categories") or {}
+    names = [c.get("displayName", "") for c in [cats.get("primaryCategory") or {}, *cats.get("additionalCategories", [])]]
+    lines = []
+    if any(names):
+        lines.append("Categories: " + ", ".join(n for n in names if n))
+    description = (raw.get("profile") or {}).get("description", "").strip()
+    if description:
+        lines.append(description)
+    return "\n".join(lines)
+
+
 def parse_location(account: str, raw: dict) -> GbpLocation:
     addr = raw.get("storefrontAddress") or {}
     parts = [*addr.get("addressLines", []), addr.get("postalCode", ""), addr.get("locality", "")]
@@ -50,6 +64,8 @@ def parse_location(account: str, raw: dict) -> GbpLocation:
         title=raw.get("title", ""),
         address=", ".join(p for p in parts if p),
         website=raw.get("websiteUri", ""),
+        city=addr.get("locality", ""),
+        context=profile_context(raw),
     )
 
 
@@ -91,7 +107,7 @@ class LiveGbpClient:
     def list_locations(self) -> list[GbpLocation]:
         result = []
         for account in self._paginate(ACCOUNTS_URL, "accounts", {"pageSize": 20}):
-            params = {"pageSize": 100, "readMask": "name,title,storefrontAddress,websiteUri"}
+            params = {"pageSize": 100, "readMask": "name,title,storefrontAddress,websiteUri,categories,profile"}
             for raw in self._paginate(f"{INFO_URL}/{account['name']}/locations", "locations", params):
                 result.append(parse_location(account["name"], raw))
         return result

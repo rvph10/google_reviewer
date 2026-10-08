@@ -100,3 +100,18 @@ def test_failed_draft_is_retried(db, monkeypatch):
     jobs.run_cycle()
     db.expire_all()
     assert ReviewStatus.FAILED not in statuses(db, "locations/1002").values()
+
+
+def test_context_prefilled_from_profile_without_overwriting(db):
+    jobs.run_cycle()
+    bakery = db.scalar(select(Location).where(Location.name == "locations/1001"))
+    garage = db.scalar(select(Location).where(Location.name == "locations/1002"))
+    assert bakery.city == "Bruxelles"
+    assert bakery.business_context.startswith("Categories: Bakery, Pastry shop, Cake shop\nBoulangerie artisanale")
+    assert garage.business_context == "Categories: Auto repair shop, Tire shop"
+
+    bakery.business_context = "Edited by hand"
+    db.commit()
+    jobs.run_cycle()
+    db.expire_all()
+    assert db.get(Location, bakery.id).business_context == "Edited by hand"

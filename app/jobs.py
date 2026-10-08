@@ -42,10 +42,12 @@ def discover_locations(db: Session, gbp: GbpClient) -> list[Location]:
     for item in gbp.list_locations():
         loc = db.scalar(select(Location).where(Location.name == item.name))
         if loc is None:
-            loc = Location(name=item.name, account=item.account, title=item.title, city="")
+            loc = Location(name=item.name, account=item.account, title=item.title)
             db.add(loc)
             new.append(loc)
         loc.account, loc.title, loc.address, loc.website = item.account, item.title, item.address, item.website
+        loc.city = loc.city or item.city
+        loc.business_context = loc.business_context or item.context
     db.commit()
     return new
 
