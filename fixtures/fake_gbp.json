@@ -1,0 +1,86 @@
+{
+  "locations": [
+    {
+      "account": "accounts/100",
+      "name": "locations/1001",
+      "title": "Boulangerie Dupont",
+      "websiteUri": "https://boulangerie-dupont.example",
+      "storefrontAddress": {"addressLines": ["Rue Haute 12"], "postalCode": "1000", "locality": "Bruxelles"},
+      "reviews": [
+        {
+          "name": "accounts/100/locations/1001/reviews/r1",
+          "reviewId": "r1",
+          "reviewer": {"displayName": "Sophie Martin"},
+          "starRating": "FIVE",
+          "comment": "Les meilleurs croissants du quartier, et toujours un accueil souriant !",
+          "createTime": "2026-06-02T08:15:00Z"
+        },
+        {
+          "name": "accounts/100/locations/1001/reviews/r2",
+          "reviewId": "r2",
+          "reviewer": {"displayName": "Jan Peeters"},
+          "starRating": "FOUR",
+          "comment": "(Translated by Google) Good bread, a bit busy on Saturday.\n\n(Original)\nLekker brood, wel wat druk op zaterdag.",
+          "createTime": "2026-07-14T10:02:00Z"
+        },
+        {
+          "name": "accounts/100/locations/1001/reviews/r3",
+          "reviewId": "r3",
+          "reviewer": {"displayName": "Marc L."},
+          "starRating": "ONE",
+          "comment": "Commande de gâteau d'anniversaire oubliée. Personne ne m'a rappelé. Très déçu.",
+          "createTime": "2026-08-20T17:40:00Z"
+        },
+        {
+          "name": "accounts/100/locations/1001/reviews/r4",
+          "reviewId": "r4",
+          "reviewer": {"displayName": "Emma"},
+          "starRating": "FIVE",
+          "createTime": "2026-09-01T09:00:00Z"
+        },
+        {
+          "name": "accounts/100/locations/1001/reviews/r5",
+          "reviewId": "r5",
+          "reviewer": {"displayName": "Luc Dubois"},
+          "starRating": "FIVE",
+          "comment": "Parfait comme toujours.",
+          "createTime": "2026-05-10T07:30:00Z",
+          "reviewReply": {"comment": "Merci Luc, à très bientôt ! Claire"}
+        }
+      ]
+    },
+    {
+      "account": "accounts/100",
+      "name": "locations/1002",
+      "title": "Garage Verbeke",
+      "websiteUri": "https://garage-verbeke.example",
+      "storefrontAddress": {"addressLines": ["Kerkstraat 8"], "postalCode": "9000", "locality": "Gent"},
+      "reviews": [
+        {
+          "name": "accounts/100/locations/1002/reviews/g1",
+          "reviewId": "g1",
+          "reviewer": {"displayName": "Pieter De Smet"},
+          "starRating": "FIVE",
+          "comment": "Snelle en eerlijke service voor mijn onderhoud. Aanrader!",
+          "createTime": "2026-07-03T13:20:00Z"
+        },
+        {
+          "name": "accounts/100/locations/1002/reviews/g2",
+          "reviewId": "g2",
+          "reviewer": {"displayName": "Tom Baker"},
+          "starRating": "THREE",
+          "comment": "Fixed my brakes fine but the invoice was higher than the quote.",
+          "createTime": "2026-08-11T15:45:00Z"
+        },
+        {
+          "name": "accounts/100/locations/1002/reviews/g3",
+          "reviewId": "g3",
+          "reviewer": {"displayName": "Anonymous"},
+          "starRating": "TWO",
+          "comment": "Mijn auto had na de herstelling een kras. Ik overweeg juridische stappen.",
+          "createTime": "2026-09-22T11:10:00Z"
+        }
+      ]
+    }
+  ]
+}
