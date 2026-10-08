@@ -42,7 +42,9 @@ class RefusalError(RuntimeError):
 
 
 def _client() -> anthropic.Anthropic:
-    return anthropic.Anthropic(api_key=get_settings().anthropic_api_key or None)
+    s = get_settings()
+    headers = {"anthropic-workspace-id": s.anthropic_workspace_id} if s.anthropic_workspace_id else None
+    return anthropic.Anthropic(api_key=s.anthropic_api_key or None, default_headers=headers)
 
 
 def business_profile(location: Location) -> str:

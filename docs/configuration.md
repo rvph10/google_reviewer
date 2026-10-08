@@ -14,6 +14,7 @@ All settings are environment variables. Locally they are read from `.env`.
 | `GOOGLE_CLIENT_SECRET` | | OAuth client secret |
 | `GBP_MODE` | `fake` | `fake` uses fixtures, `live` calls Google |
 | `ANTHROPIC_API_KEY` | | Claude API key |
+| `ANTHROPIC_WORKSPACE_ID` | | Required when the API key is not scoped to a workspace |
 | `CLAUDE_MODEL` | `claude-haiku-5-5` | Model used for drafts |
 | `CLAUDE_EFFORT` | `medium` | `low`, `medium` or `high` |
 | `RESEND_API_KEY` | | Resend API key. Without it emails are only logged |

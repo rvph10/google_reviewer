@@ -19,6 +19,7 @@ class Settings(BaseSettings):
     gbp_mode: Literal["live", "fake"] = "fake"
 
     anthropic_api_key: str = ""
+    anthropic_workspace_id: str = ""
     claude_model: str = "claude-haiku-5-5"
     claude_effort: Literal["low", "medium", "high"] = "medium"
 
