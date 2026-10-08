@@ -13,6 +13,12 @@
   {% endif %}
   <form method="post" action="/run" style="margin-left:auto"><button>Run cycle now</button></form>
 </div>
+{% if last_cycle.at %}
+<div class="card">
+  <span class="muted">Last cycle {{ last_cycle.at.strftime("%Y-%m-%d %H:%M") }} UTC</span>
+  {% if last_cycle.error %}<div class="bad">{{ last_cycle.error }}</div>{% else %}<span class="muted">, no errors.</span>{% endif %}
+</div>
+{% endif %}
 
 <h2>Needs attention</h2>
 {% for r in pending %}

@@ -1,5 +1,6 @@
 import uuid
 
+import httpx
 import pytest
 from sqlalchemy import select
 
@@ -115,3 +116,15 @@ def test_context_prefilled_from_profile_without_overwriting(db):
     jobs.run_cycle()
     db.expire_all()
     assert db.get(Location, bakery.id).business_context == "Edited by hand"
+
+
+def test_cycle_error_is_reported(db, monkeypatch):
+    request = httpx.Request("GET", "https://example.test")
+    response = httpx.Response(429, json={"error": {"message": "Quota exceeded"}}, request=request)
+
+    def fail():
+        raise httpx.HTTPStatusError("429", request=request, response=response)
+
+    monkeypatch.setattr(jobs._fake, "list_locations", fail)
+    jobs.run_cycle()
+    assert "Google API 429: Quota exceeded" in jobs.last_cycle["error"]

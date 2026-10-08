@@ -14,7 +14,7 @@ from app.crypto import encrypt, sign, unsign
 from app.db import SessionLocal
 from app.drafting import draft_reply
 from app.google import oauth
-from app.jobs import audit, gbp_client, publish, recent_replies, run_cycle
+from app.jobs import audit, gbp_client, last_cycle, publish, recent_replies, run_cycle
 from app.mailer import review_link
 from app.models import Credential, Location, Review, ReviewStatus
 
@@ -60,6 +60,7 @@ def dashboard(request: Request, db=Depends(get_db)):
         "locations": locations,
         "counts": counts,
         "pending": pending,
+        "last_cycle": last_cycle,
     })
 
 

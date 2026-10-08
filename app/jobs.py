@@ -3,6 +3,7 @@ import threading
 from collections import defaultdict
 from datetime import UTC, datetime, timedelta
 
+import httpx
 from sqlalchemy import func, select
 from sqlalchemy.orm import Session
 
@@ -19,6 +20,7 @@ from app.text import too_similar
 log = logging.getLogger(__name__)
 _lock = threading.Lock()
 _fake: FakeGbpClient | None = None
+last_cycle: dict = {"at": None, "error": ""}
 OPEN_STATUSES = (ReviewStatus.NEW, ReviewStatus.AWAITING_APPROVAL, ReviewStatus.QUEUED, ReviewStatus.FAILED)
 
 
@@ -174,22 +176,42 @@ def run_cycle() -> None:
         log.info("Cycle already running")
         return
     try:
-        with SessionLocal() as db:
-            gbp = gbp_client(db)
-            if gbp is None:
-                log.info("No Google account connected, skipping cycle")
-                return
-            base = get_settings().base_url.rstrip("/")
-            for loc in discover_locations(db, gbp):
-                _send(mailer.notify_new_location, loc.title, f"{base}/locations/{loc.id}")
-            for loc in db.scalars(select(Location).where(Location.enabled)).all():
-                try:
-                    sync_reviews(db, gbp, loc)
-                    draft_new(db, loc)
-                except Exception:
-                    db.rollback()
-                    log.exception("Cycle failed for %s", loc.title)
-            notify_pending(db)
-            post_queued(db, gbp)
+        _run_cycle()
+        last_cycle["error"] = ""
+    except Exception as exc:
+        log.exception("Cycle failed")
+        last_cycle["error"] = describe_error(exc)
     finally:
+        last_cycle["at"] = datetime.now(UTC)
         _lock.release()
+
+
+def describe_error(exc: Exception) -> str:
+    if isinstance(exc, httpx.HTTPStatusError):
+        try:
+            message = exc.response.json()["error"]["message"]
+        except Exception:
+            message = exc.response.text[:300]
+        hint = " Google API access is probably not approved yet (quota 0)." if exc.response.status_code == 429 else ""
+        return f"Google API {exc.response.status_code}: {message}{hint}"
+    return str(exc)
+
+
+def _run_cycle() -> None:
+    with SessionLocal() as db:
+        gbp = gbp_client(db)
+        if gbp is None:
+            log.info("No Google account connected, skipping cycle")
+            return
+        base = get_settings().base_url.rstrip("/")
+        for loc in discover_locations(db, gbp):
+            _send(mailer.notify_new_location, loc.title, f"{base}/locations/{loc.id}")
+        for loc in db.scalars(select(Location).where(Location.enabled)).all():
+            try:
+                sync_reviews(db, gbp, loc)
+                draft_new(db, loc)
+            except Exception:
+                db.rollback()
+                log.exception("Cycle failed for %s", loc.title)
+        notify_pending(db)
+        post_queued(db, gbp)
