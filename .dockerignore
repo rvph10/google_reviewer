@@ -1,0 +1,7 @@
+.venv
+.git
+.env
+*.db
+tests
+docs
+client_secret_*.json
