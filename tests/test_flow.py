@@ -79,3 +79,24 @@ def test_route_respects_location_and_risk():
     assert jobs.route(5, True, loc) == ReviewStatus.AWAITING_APPROVAL
     loc.auto_post = False
     assert jobs.route(5, False, loc) == ReviewStatus.AWAITING_APPROVAL
+
+
+def test_failed_draft_is_retried(db, monkeypatch):
+    jobs.run_cycle()
+    loc = db.scalar(select(Location).where(Location.name == "locations/1002"))
+    loc.enabled = True
+    db.commit()
+    working = jobs.draft_reply
+
+    def broken(*args):
+        raise RuntimeError("API down")
+
+    monkeypatch.setattr(jobs, "draft_reply", broken)
+    jobs.run_cycle()
+    db.expire_all()
+    assert set(statuses(db, "locations/1002").values()) == {ReviewStatus.FAILED}
+
+    monkeypatch.setattr(jobs, "draft_reply", working)
+    jobs.run_cycle()
+    db.expire_all()
+    assert ReviewStatus.FAILED not in statuses(db, "locations/1002").values()

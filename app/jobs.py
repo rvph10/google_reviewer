@@ -86,7 +86,9 @@ def route(stars: int, risky: bool, loc: Location) -> str:
 
 
 def draft_new(db: Session, loc: Location) -> None:
-    for review in db.scalars(select(Review).where(Review.location_id == loc.id, Review.status == ReviewStatus.NEW)).all():
+    retry = (Review.status == ReviewStatus.FAILED) & (Review.draft == "")
+    to_draft = select(Review).where(Review.location_id == loc.id, (Review.status == ReviewStatus.NEW) | retry)
+    for review in db.scalars(to_draft).all():
         avoid = recent_replies(db, loc)
         try:
             draft = draft_reply(loc, review, avoid)
