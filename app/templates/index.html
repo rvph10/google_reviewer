@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>Google Reviewer</h1>
+<div class="card row">
+  {% if mode == "fake" %}
+    <span>Running in <strong>fake</strong> mode with fixture data.</span>
+  {% elif credential %}
+    <span>Connected as <strong>{{ credential.email }}</strong></span>
+    <a href="/oauth/start">Reconnect</a>
+  {% else %}
+    <span class="warn">No Google account connected.</span>
+    <a href="/oauth/start">Connect Google</a>
+  {% endif %}
+  <form method="post" action="/run" style="margin-left:auto"><button>Run cycle now</button></form>
+</div>
+
+<h2>Needs attention</h2>
+{% for r in pending %}
+  <div class="card">
+    <div class="row">
+      <strong>{{ r.location.title }}</strong>
+      <span class="tag">{{ r.stars }} star(s)</span>
+      <span class="tag {{ 'bad' if r.status == 'failed' }}">{{ r.status }}</span>
+      {% if r.backfill %}<span class="tag">backfill</span>{% endif %}
+      <a href="{{ review_link(r) }}" style="margin-left:auto">Open</a>
+    </div>
+    <blockquote>{{ r.comment or "(no text)" }}</blockquote>
+    {% if r.risk_reason %}<div class="warn muted">{{ r.risk_reason }}</div>{% endif %}
+  </div>
+{% else %}
+  <p class="muted">Nothing waiting.</p>
+{% endfor %}
+
+<h2>Locations</h2>
+<table>
+  <tr><th>Business</th><th>Status</th><th>Posted</th><th>Pending</th><th>Queued</th><th></th></tr>
+  {% for loc in locations %}
+  <tr>
+    <td>{{ loc.title }}<div class="muted">{{ loc.address }}</div></td>
+    <td>{{ "Enabled" if loc.enabled else "Disabled" }}{% if loc.enabled and not loc.auto_post %}, manual{% endif %}</td>
+    <td>{{ counts[loc.id]["posted"] }}</td>
+    <td>{{ counts[loc.id]["awaiting_approval"] }}</td>
+    <td>{{ counts[loc.id]["queued"] }}</td>
+    <td><a href="/locations/{{ loc.id }}">Settings</a></td>
+  </tr>
+  {% else %}
+  <tr><td colspan="6" class="muted">No locations yet. Run a cycle after connecting Google.</td></tr>
+  {% endfor %}
+</table>
+{% endblock %}

@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{% block title %}Google Reviewer{% endblock %}</title>
+<style>
+  :root { --fg: #1c1f23; --muted: #6b7280; --line: #e5e7eb; --bg: #f8f9fa; --card: #fff; --accent: #1a56db; --warn: #b45309; --bad: #b91c1c; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font: 15px/1.5 system-ui, sans-serif; color: var(--fg); background: var(--bg); }
+  main { max-width: 900px; margin: 0 auto; padding: 24px 16px 64px; }
+  h1 { font-size: 22px; margin: 0 0 16px; }
+  h2 { font-size: 17px; margin: 32px 0 12px; }
+  a { color: var(--accent); }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 8px; padding: 16px; margin-bottom: 12px; }
+  .muted { color: var(--muted); font-size: 13px; }
+  .row { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; }
+  .tag { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 99px; background: var(--bg); border: 1px solid var(--line); }
+  .warn { color: var(--warn); }
+  .bad { color: var(--bad); }
+  table { width: 100%; border-collapse: collapse; background: var(--card); border: 1px solid var(--line); border-radius: 8px; }
+  th, td { text-align: left; padding: 8px 12px; border-bottom: 1px solid var(--line); font-size: 14px; }
+  label { display: block; font-weight: 600; margin: 12px 0 4px; font-size: 14px; }
+  label.inline { display: inline-flex; gap: 6px; font-weight: 400; margin-right: 16px; }
+  input[type=text], textarea, select { width: 100%; padding: 8px; border: 1px solid var(--line); border-radius: 6px; font: inherit; }
+  textarea { min-height: 120px; }
+  button { padding: 8px 16px; border-radius: 6px; border: 1px solid var(--line); background: var(--card); font: inherit; cursor: pointer; }
+  button.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
+  blockquote { margin: 8px 0; padding-left: 12px; border-left: 3px solid var(--line); white-space: pre-wrap; }
+</style>
+</head>
+<body><main>{% block content %}{% endblock %}</main></body>
+</html>

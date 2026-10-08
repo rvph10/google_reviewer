@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% block title %}{{ loc.title }}{% endblock %}
+{% block content %}
+<p><a href="/">Back</a></p>
+<h1>{{ loc.title }}</h1>
+<p class="muted">{{ loc.address }} {% if loc.website %}| <a href="{{ loc.website }}">{{ loc.website }}</a>{% endif %}</p>
+<form method="post" class="card">
+  <label class="inline"><input type="checkbox" name="enabled" {{ "checked" if loc.enabled }}> Enabled</label>
+  <label class="inline"><input type="checkbox" name="auto_post" {{ "checked" if loc.auto_post }}> Auto-post positive reviews</label>
+  <label class="inline"><input type="checkbox" name="formal" {{ "checked" if loc.formal }}> Formal address (vous, u)</label>
+
+  <label for="business_context">About the business</label>
+  <textarea id="business_context" name="business_context" placeholder="Services, specialties, anything the replies may mention">{{ loc.business_context }}</textarea>
+
+  <label for="city">City or area</label>
+  <input type="text" id="city" name="city" value="{{ loc.city }}">
+
+  <label for="signature">Signature</label>
+  <input type="text" id="signature" name="signature" value="{{ loc.signature }}" placeholder="Claire, Boulangerie Dupont">
+
+  <label for="contact">Contact for complaints</label>
+  <input type="text" id="contact" name="contact" value="{{ loc.contact }}" placeholder="info@example.com or +32 2 123 45 67">
+
+  <label for="default_language">Default language</label>
+  <select id="default_language" name="default_language">
+    {% for code, name in [("fr", "French"), ("nl", "Dutch"), ("en", "English")] %}
+      <option value="{{ code }}" {{ "selected" if loc.default_language == code }}>{{ name }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="banned_phrases">Words or phrases to avoid</label>
+  <input type="text" id="banned_phrases" name="banned_phrases" value="{{ loc.banned_phrases }}">
+
+  <p><button class="primary">Save</button></p>
+  {% if not loc.backfill_done %}<p class="muted">Enabling this location answers all its existing unanswered reviews, at most a few per hour.</p>{% endif %}
+</form>
+{% endblock %}

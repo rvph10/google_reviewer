@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block title %}Review for {{ review.location.title }}{% endblock %}
+{% block content %}
+<h1>{{ review.location.title }}</h1>
+{% if message %}<div class="card"><strong>{{ message }}</strong></div>{% endif %}
+<div class="card">
+  <div class="row">
+    <strong>{{ review.reviewer or "Anonymous" }}</strong>
+    <span class="tag">{{ review.stars }} star(s)</span>
+    <span class="tag">{{ review.status }}</span>
+    {% if review.created_at %}<span class="muted">{{ review.created_at.strftime("%Y-%m-%d") }}</span>{% endif %}
+  </div>
+  <blockquote>{{ review.comment or "(no text)" }}</blockquote>
+  {% if review.risk_reason %}<p class="warn">Flagged: {{ review.risk_reason }}</p>{% endif %}
+  {% if review.error %}<p class="bad">{{ review.error }}</p>{% endif %}
+</div>
+
+{% if editable %}
+<form method="post" class="card">
+  <label for="reply">Reply</label>
+  <textarea id="reply" name="reply">{{ review.draft }}</textarea>
+  <p class="row">
+    <button class="primary" name="action" value="post">Post reply</button>
+    <button name="action" value="regenerate">Regenerate</button>
+    <button name="action" value="skip">Skip</button>
+  </p>
+</form>
+{% elif review.reply %}
+<div class="card"><label>Posted reply</label><blockquote>{{ review.reply }}</blockquote></div>
+{% endif %}
+{% endblock %}
